@@ -1,23 +1,33 @@
 class StormyCloud
   def initialize(server)
     @server = server
-    @config = {}
-
-    yield self
+    @config = {
+      :wait => 15
+    }
+    if block_given?
+      yield self
+    end
   end
 
-  # If the key is valid and the value is a `kind_of` the corresponding class,
-  # set the configuration variable. Otherwise, raise an ArgumentError.
-  def config(key, value)
+  # If the key is not in a whitelist, raise an ArgumentError. Otherwise,
+  # check whether a value has been given. If no value has been given, return
+  # the value of that key. If a value has been given, check whether it is a
+  # `kind_of` the corresponding class for that key, and if so set the
+  # configuration variable to the new value. Otherwise raise an ArgumentError.
+  def config(key, value=nil)
     valid_configs = {
       :wait => Fixnum
     }
-    
+
     if not valid_configs.keys.include? key
       raise ArgumentError.new("invalid configuration key: #{key.to_s}")
     end
 
-    if not value.kind_of? valid_configs[keys]
+    if value.nil?
+      return @config[key]
+    end
+
+    if not value.kind_of? valid_configs[key]
       raise ArgumentError.new("invalid configuration value for #{key.to_s}")
     end
 
