@@ -1,14 +1,8 @@
 Goal
 ----
 
-Make it ridiculously easy to write a web crawler.
+Make it ridiculously easy to write distributed applications in Ruby.
 
-
-Technology
-----------
-
-- Sinatra
-- MessagePack
 
 How it works
 ------------
