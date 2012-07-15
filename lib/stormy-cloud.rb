@@ -4,6 +4,12 @@ class StormyCloud
     @config = {
       :wait => 15
     }
+
+    @generate = lambda do
+      raise NotImplementedError.new("generate was not specified")
+    end
+
+
     if block_given?
       yield self
     end
@@ -32,5 +38,12 @@ class StormyCloud
     end
 
     @config[key] = value
+  end
+
+  def generate(&block)
+    if block
+    else
+      @generate.call
+    end
   end
 end
