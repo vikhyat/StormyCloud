@@ -72,6 +72,9 @@ class StormyCloud
     end
   end
 
+  # When called with a block, save the block for later user. When called
+  # with a single argument, call the block saved earlier. Raise an
+  # ArgumentError if called without a block and task.
   def map(task=nil, &block)
     if task.nil? and block.nil?
       raise ArgumentError, "map called without a task and block"
@@ -84,6 +87,9 @@ class StormyCloud
     end
   end
 
+  # When called with a block, save the block for later user. When called
+  # with a single argument, call the block saved earlier. Raise an
+  # ArgumentError if called without a block and task.
   def reduce(result=nil, &block)
     if block.nil? and result.nil?
       raise ArgumentError, "reduce called without a result and block"
