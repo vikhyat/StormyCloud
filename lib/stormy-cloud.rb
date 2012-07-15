@@ -8,6 +8,9 @@ class StormyCloud
     @generate = lambda do
       raise NotImplementedError.new("generate was not specified")
     end
+    @perform  = lambda do
+      raise NotImplementedError.new("perform was not specified")
+    end
 
 
     if block_given?
@@ -60,6 +63,14 @@ class StormyCloud
       tasks
     else
       raise TypeError, "generate should return an array"
+    end
+  end
+
+  def perform(&block)
+    if block
+      @perform = block
+    else
+      @perform.call
     end
   end
 end

@@ -44,4 +44,19 @@ describe StormyCloud do
       expect { @sc.generate }.to raise_error(TypeError)
     end
   end
+
+  describe "#perform" do
+    before(:each) do
+      @sc = StormyCloud.new("127.0.0.1")
+    end
+
+    it "should raise NotImplementedError when not set" do
+      expect { @sc.perform }.to raise_error(NotImplementedError)
+    end
+
+    it "should accept a block and save it" do
+      @sc.perform { 42 }
+      @sc.perform.should == 42
+    end
+  end
 end
