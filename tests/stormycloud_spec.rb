@@ -33,5 +33,10 @@ describe StormyCloud do
     it "should raise NotImplementedError if no generate function is given" do
       expect { @sc.generate }.to raise_error(NotImplementedError)
     end
+
+    it "should accept a block and save it" do
+      @sc.generate { [1,2,3] }
+      @sc.generate.should == [1,2,3]
+    end
   end
 end

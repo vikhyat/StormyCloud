@@ -42,6 +42,7 @@ class StormyCloud
 
   def generate(&block)
     if block
+      @generate = block
     else
       @generate.call
     end
