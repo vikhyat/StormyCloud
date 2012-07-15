@@ -1,3 +1,5 @@
+require 'thread'
+
 class StormyCloud
   def initialize(server)
     @server = server
@@ -11,10 +13,11 @@ class StormyCloud
     @map    = lambda do |t|
       raise NotImplementedError.new("map was not specified")
     end
-    @reduce = lambda do |r|
+    @reduce = lambda do |mutex, r|
       raise NotImplementedError.new("reduce was not specified")
     end
 
+    @reduce_mutex = Mutex.new
 
     if block_given?
       yield self
@@ -89,7 +92,7 @@ class StormyCloud
     if block
       @reduce = block
     else
-      @reduce.call(result)
+      @reduce.call(@reduce_mutex, result)
     end
   end
 end
