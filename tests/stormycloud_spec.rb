@@ -45,18 +45,18 @@ describe StormyCloud do
     end
   end
 
-  describe "#perform" do
+  describe "#map" do
     before(:each) do
       @sc = StormyCloud.new("127.0.0.1")
     end
 
     it "should raise NotImplementedError when not set" do
-      expect { @sc.perform }.to raise_error(NotImplementedError)
+      expect { @sc.map }.to raise_error(NotImplementedError)
     end
 
     it "should accept a block and save it" do
-      @sc.perform { 42 }
-      @sc.perform.should == 42
+      @sc.map { 42 }
+      @sc.map.should == 42
     end
   end
 end
