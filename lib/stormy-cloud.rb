@@ -5,7 +5,8 @@ class StormyCloud
     @server = server
     @config = {
       :wait   => 15,
-      :debug  => false
+      :debug  => false,
+      :port   => 4312
     }
 
     @split    = lambda do
@@ -46,7 +47,8 @@ class StormyCloud
   def _validate_config(key, value)
     valid = {
       :wait   => Fixnum,
-      :debug  => [TrueClass, FalseClass]
+      :debug  => [TrueClass, FalseClass],
+      :port   => Fixnum
     }
 
     if not valid.keys.include? key

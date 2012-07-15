@@ -23,9 +23,14 @@ describe StormyCloud do
       @sc.config(:wait).should == 15
       @sc.config(:wait, 20)
       @sc.config(:wait).should == 20
+
       @sc.config(:debug).should == false
       @sc.config(:debug, true)
       @sc.config(:debug).should == true
+
+      @sc.config(:port).should == 4312
+      @sc.config(:port, 9861)
+      @sc.config(:port).should == 9861
     end
   end
 
