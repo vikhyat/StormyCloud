@@ -16,7 +16,7 @@ StormyCloud.new("192.168.1.6") do |c|
   end
 
   # Perform a single task.
-  c.perform do |t|
+  c.map do |t|
     sleep 20 # "work"
     t**2
   end

@@ -8,8 +8,8 @@ class StormyCloud
     @split = lambda do
       raise NotImplementedError.new("split was not specified")
     end
-    @perform  = lambda do
-      raise NotImplementedError.new("perform was not specified")
+    @map  = lambda do
+      raise NotImplementedError.new("map was not specified")
     end
 
 
@@ -66,11 +66,11 @@ class StormyCloud
     end
   end
 
-  def perform(&block)
+  def map(&block)
     if block
-      @perform = block
+      @map = block
     else
-      @perform.call
+      @map.call
     end
   end
 end
