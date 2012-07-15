@@ -13,6 +13,10 @@ class StormyCloudTransport
   def initialize
     # Generate a secret that will be used to shutdown the server.
     @secret     = SecureRandom.hex(32)
+    # A hash of identifier -> time of last server access.
+    @clients    = {}
+    # Are we operating in server mode or client mode?
+    @mode       = :server
   end
 
   # A unique identifier derived from the secret.
@@ -29,9 +33,21 @@ class StormyCloudTransport
   # the identifier as its first parameter.
   #
   # The following actions are supported:
-  #   HELLO(identifier)
+  #   HELLO(identifier) -> get the server's identifier.
+  #
   def handler(string)
+    valid_commands = ["HELLO"]
+    command = unserialize(string)
+    
+    if (not command.kind_of?(Array)) or valid_commands.include? command[0]
+      return serialize("NOPE")
+    end
 
+    @clients[command[1]] = Time.now
+    if command[0] == "HELLO"
+      # Return the server's identifier.
+      return serialize(identifier)
+    end
   end
 
   # Check whether the system running this code is the one that is designated as
