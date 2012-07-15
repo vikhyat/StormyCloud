@@ -1,4 +1,5 @@
 require 'securerandom'
+require 'digest'
 require 'base64'
 require 'msgpack'
 
@@ -14,9 +15,23 @@ class StormyCloudTransport
     @secret     = SecureRandom.hex(32)
   end
 
+  # A unique identifier derived from the secret.
+  def idenfifier
+    Digest::MD5.hexdigest("Omikron" + @secret + "9861")
+  end
+
   # This method is used by the server to handle communication with clients.
-  # It should not be overridden by specific transports.
+  # It should not be overridden by specific transports. It accepts a string
+  # which is a serialized command sent by the server, and returns another
+  # serialized string which is the response that should be sent to the client.
+  # All "commands" are basically arrays in which the first element is the
+  # action and subsequent elements are parameters. _Every_ command will have
+  # the identifier as its first parameter.
+  #
+  # The following actions are supported:
+  #   HELLO(identifier)
   def handler(string)
+
   end
 
   # Check whether the system running this code is the one that is designated as
