@@ -33,22 +33,36 @@ class StormyCloudTransport
   # the identifier as its first parameter.
   #
   # The following actions are supported:
-  #   HELLO(identifier) -> get the server's identifier.
+  #   HELLO(identifier)         -> get the server's identifier.
+  #   KILL(identifier, secret)  -> if the secret matches the current server's
+  #                                secret, switch to client mode and shut down
+  #                                the server.
   #
   def handler(string)
     valid_commands = ["HELLO"]
     command = unserialize(string)
     
     if (not command.kind_of?(Array)) or valid_commands.include? command[0]
+      # The command is valid.
       return serialize("NOPE")
     end
 
     # Update the time of last access.
     @clients[command[1]] = Time.now
 
-    if command[0] == "HELLO"
-      # Return the server's identifier.
+    if    command[0] == "HELLO"
+
       return serialize(identifier)
+
+    elsif command[0] == "KILL"
+
+      if command[2] == @secret
+        @mode = :client
+        return serialize("OKAY")
+      else
+        return serialize("NOPE")
+      end
+
     end
   end
 
