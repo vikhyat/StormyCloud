@@ -10,7 +10,10 @@ describe StormyCloudTransport do
 
   describe "#serialize" do
     it "should serialize several types of objects correctly" do
-      
+      t = StormyCloudTransport.new
+      [ 42, "string!", [1,2,3], ["m",1,"x",3,"d"] ].each do |object|
+        t.unserialize(t.serialize(object)).should == object
+      end
     end
   end
 end

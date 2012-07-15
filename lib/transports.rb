@@ -1,4 +1,6 @@
 require 'securerandom'
+require 'base64'
+require 'msgpack'
 
 # Define the basic outline of a transport, and provide serialization and stuff
 # so that code doesn't have to be duplicated in every transport definition.
@@ -10,6 +12,8 @@ class StormyCloudTransport
   def initialize
     # Give a unique identifier to this transport class.
     @identifier = SecureRandom.hex(32)
+    # Generate a secret that will be used to shutdown the server.
+    @secret     = SecureRandom.hex(32)
   end
 
   # Check whether the system running this code is the one that is designated as
@@ -29,5 +33,11 @@ class StormyCloudTransport
   # such that this mode of serialization is disadvantageous.
   def serialize(object)
     Base64::encode64(object.to_msgpack)
+  end
+
+  # Unserialize an object which has been serialized using the `serialize`
+  # method.
+  def unserialize(string)
+    MessagePack.unpack(Base64::decode64(string))
   end
 end
