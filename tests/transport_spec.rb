@@ -4,7 +4,7 @@ describe StormyCloudTransport do
   describe "#initialize" do
     it "should assign a random identifier" do
       t = StormyCloudTransport.new
-      t.identifier.should_not == nil
+      t.secret.should_not == nil
     end
   end
 

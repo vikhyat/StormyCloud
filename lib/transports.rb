@@ -5,15 +5,18 @@ require 'msgpack'
 # Define the basic outline of a transport, and provide serialization and stuff
 # so that code doesn't have to be duplicated in every transport definition.
 class StormyCloudTransport
-  attr_reader :identifier
+  attr_reader :secret
   # This method should be "extended" by the specific transports, i.e. they
   # should first call super and then perform any transport-specific
   # instantiation.
   def initialize
-    # Give a unique identifier to this transport class.
-    @identifier = SecureRandom.hex(32)
     # Generate a secret that will be used to shutdown the server.
     @secret     = SecureRandom.hex(32)
+  end
+
+  # This method is used by the server to handle communication with clients.
+  # It should not be overridden by specific transports.
+  def handler(string)
   end
 
   # Check whether the system running this code is the one that is designated as
@@ -25,8 +28,6 @@ class StormyCloudTransport
   def loopback?
     raise NotImplementedError
   end
-
-
 
   # Serialize a request into a string by doing MsgPack + Base64 encoding.
   # This can be overridden by the specific transport if the protocol used is
