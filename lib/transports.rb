@@ -43,7 +43,9 @@ class StormyCloudTransport
       return serialize("NOPE")
     end
 
+    # Update the time of last access.
     @clients[command[1]] = Time.now
+
     if command[0] == "HELLO"
       # Return the server's identifier.
       return serialize(identifier)
