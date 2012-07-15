@@ -143,7 +143,8 @@ class StormyCloud
   # Run the job!
   def run
     if config(:debug)
-      @result = 42
+      split.map {|t| map(t) }.each {|r| reduce(r) }
+      @result = finally
     else
       raise NotImplementedError
     end
