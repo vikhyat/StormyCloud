@@ -38,5 +38,10 @@ describe StormyCloud do
       @sc.generate { [1,2,3] }
       @sc.generate.should == [1,2,3]
     end
+
+    it "should raise an error when the returned value is not an array" do
+      @sc.generate { "not an array" }
+      expect { @sc.generate }.to raise_error(TypeError)
+    end
   end
 end
