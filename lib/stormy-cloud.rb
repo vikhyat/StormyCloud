@@ -4,7 +4,8 @@ class StormyCloud
   def initialize(server)
     @server = server
     @config = {
-      :wait => 15
+      :wait   => 15,
+      :debug  => false
     }
 
     @split    = lambda do
@@ -31,23 +32,41 @@ class StormyCloud
   # `kind_of` the corresponding class for that key, and if so set the
   # configuration variable to the new value. Otherwise raise an ArgumentError.
   def config(key, value=nil)
-    valid_configs = {
-      :wait => Fixnum
+    _validate_config(key, value)
+
+    if value.nil?
+      @config[key]
+    else
+      @config[key] = value
+    end
+    
+  end
+
+  # Validate the configuration keys and values.
+  def _validate_config(key, value)
+    valid = {
+      :wait   => Fixnum,
+      :debug  => [TrueClass, FalseClass]
     }
 
-    if not valid_configs.keys.include? key
+    if not valid.keys.include? key
       raise ArgumentError.new("invalid configuration key: #{key.to_s}")
     end
 
-    if value.nil?
-      return @config[key]
-    end
+    if not value.nil?
+      type = valid[key]
+      error = false
 
-    if not value.kind_of? valid_configs[key]
-      raise ArgumentError.new("invalid configuration value for #{key.to_s}")
-    end
+      if type.kind_of? Array
+        error = true unless type.any? {|t| value.kind_of? t }
+      else
+        error = true unless value.kind_of? type
+      end
 
-    @config[key] = value
+      if error
+        raise ArgumentError.new("invalid configuration value for #{key.to_s}")
+      end
+    end
   end
 
   # When called with a block, save that block for later usage. When called

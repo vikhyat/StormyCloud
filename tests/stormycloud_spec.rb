@@ -16,12 +16,16 @@ describe StormyCloud do
 
     it "should check the type of the value" do
       expect { @sc.config(:wait, "invalid") }.to raise_error(ArgumentError)
+      expect { @sc.config(:debug, "invalid") }.to raise_error(ArgumentError)
     end
 
     it "should set the value when it is of the correct type" do
       @sc.config(:wait).should == 15
       @sc.config(:wait, 20)
       @sc.config(:wait).should == 20
+      @sc.config(:debug).should == false
+      @sc.config(:debug, true)
+      @sc.config(:debug).should == true
     end
   end
 
