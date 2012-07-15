@@ -59,4 +59,19 @@ describe StormyCloud do
       @sc.map.should == 42
     end
   end
+
+  describe "#reduce" do
+    before(:each) do
+      @sc = StormyCloud.new("127.0.0.1")
+    end
+
+    it "should raise NotImplementedError when not set" do
+      expect { @sc.reduce }.should raise_error(NotImplementedError)
+    end
+
+    it "should accept a block and save it" do
+      @sc.reduce {|r| r + 50 }
+      @sc.reduce(23).should == 73
+    end
+  end
 end
