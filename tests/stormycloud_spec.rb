@@ -66,9 +66,15 @@ describe StormyCloud do
     end
 
     it "should raise NotImplementedError when not set" do
-      expect { @sc.reduce }.should raise_error(NotImplementedError)
+      expect { @sc.reduce(23) }.to raise_error(NotImplementedError)
     end
 
+    it "should raise ArgumentError when called without a result and block" do
+      expect { @sc.reduce }.to raise_error(ArgumentError)
+      @sc.reduce {|r| r + 50 }
+      expect { @sc.reduce }.to raise_error(ArgumentError)
+    end
+    
     it "should accept a block and save it" do
       @sc.reduce {|r| r + 50 }
       @sc.reduce(23).should == 73

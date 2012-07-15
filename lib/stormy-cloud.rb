@@ -5,11 +5,14 @@ class StormyCloud
       :wait => 15
     }
 
-    @split = lambda do
+    @split  = lambda do
       raise NotImplementedError.new("split was not specified")
     end
-    @map  = lambda do
+    @map    = lambda do
       raise NotImplementedError.new("map was not specified")
+    end
+    @reduce = lambda do |r|
+      raise NotImplementedError.new("reduce was not specified")
     end
 
 
@@ -71,6 +74,18 @@ class StormyCloud
       @map = block
     else
       @map.call
+    end
+  end
+
+  def reduce(result=nil, &block)
+    if block.nil? and result.nil?
+      raise ArgumentError, "reduce called without a result and block"
+    end
+
+    if block
+      @reduce = block
+    else
+      @reduce.call(result)
     end
   end
 end
