@@ -14,4 +14,10 @@ StormyCloud.new("192.168.1.6") do |c|
   c.generate do
     (1..20).to_a
   end
+
+  # Perform a single task.
+  c.perform do |t|
+    sleep 20 # "work"
+    t**2
+  end
 end
