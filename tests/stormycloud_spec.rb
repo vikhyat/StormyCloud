@@ -51,12 +51,18 @@ describe StormyCloud do
     end
 
     it "should raise NotImplementedError when not set" do
-      expect { @sc.map }.to raise_error(NotImplementedError)
+      expect { @sc.map(23) }.to raise_error(NotImplementedError)
+    end
+
+    it "should raise ArgumentError when called without an task and block" do
+      expect { @sc.map }.to raise_error(ArgumentError)
+      @sc.map {|t| 42 }
+      expect { @sc.map }.to raise_error(ArgumentError)
     end
 
     it "should accept a block and save it" do
       @sc.map { 42 }
-      @sc.map.should == 42
+      @sc.map(23).should == 42
     end
   end
 

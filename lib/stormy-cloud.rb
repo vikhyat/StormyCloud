@@ -8,7 +8,7 @@ class StormyCloud
     @split  = lambda do
       raise NotImplementedError.new("split was not specified")
     end
-    @map    = lambda do
+    @map    = lambda do |t|
       raise NotImplementedError.new("map was not specified")
     end
     @reduce = lambda do |r|
@@ -69,11 +69,15 @@ class StormyCloud
     end
   end
 
-  def map(&block)
+  def map(task=nil, &block)
+    if task.nil? and block.nil?
+      raise ArgumentError, "map called without a task and block"
+    end
+
     if block
       @map = block
     else
-      @map.call
+      @map.call(task)
     end
   end
 
