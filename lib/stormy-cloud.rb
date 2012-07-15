@@ -1,8 +1,11 @@
 require 'thread'
 
 class StormyCloud
+  attr_reader :result
+
   def initialize(server)
     @server = server
+    @result = nil
     @config = {
       :wait   => 15,
       :debug  => false,
@@ -24,6 +27,7 @@ class StormyCloud
 
     if block_given?
       yield self
+      run
     end
   end
 
@@ -133,6 +137,15 @@ class StormyCloud
       @finally = block
     else
       @finally.call
+    end
+  end
+
+  # Run the job!
+  def run
+    if config(:debug)
+      @result = 42
+    else
+      raise NotImplementedError
     end
   end
 end

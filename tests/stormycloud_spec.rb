@@ -110,4 +110,27 @@ describe StormyCloud do
       @sc.finally.should == 42
     end
   end
+
+  describe "#run" do
+    it "should run on a single machine in debug mode, returning the finally value" do
+      @sc = StormyCloud.new("127.0.0.1")
+      @sc.config :debug, true
+      @sc.split { (1..42).to_a }
+      @sc.map {|t| 1 }
+      @sc.reduce {|r| @s ||= 0; @s += r }
+      @sc.finally { @s }
+      @sc.run.should == 42
+    end
+
+    it "should automatically be run when configuration is done using a block" do
+      sc = StormyCloud.new("127.0.0.1") do |c|
+        c.config :debug, true
+        c.split { (1..42).to_a }
+        c.map {|t| 1 }
+        c.reduce {|r| @s ||= 0; @s += r }
+        c.finally { @s }
+      end
+      sc.result.should == 42
+    end
+  end
 end
