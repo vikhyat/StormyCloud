@@ -1,7 +1,7 @@
 # Sample application that computes the square of the first 20 squares in a 
 # distributed manner.
 
-require "../lib/stormy-cloud"
+require_relative "../lib/stormy-cloud"
 
 StormyCloud.new("192.168.1.6") do |c|
   # Set the time to wait for a node to return a result to 20 seconds.
