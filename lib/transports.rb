@@ -37,6 +37,9 @@ class StormyCloudTransport
   #   KILL(identifier, secret)  -> if the secret matches the current server's
   #                                secret, switch to client mode and shut down
   #                                the server.
+  #   GET(identifier)           -> get a new task from the server.
+  #   PUT(identifier, task, result)
+  #                             -> return the result of a task to the server.
   #
   def handler(string)
     valid_commands = ["HELLO"]
@@ -62,6 +65,14 @@ class StormyCloudTransport
       else
         return serialize("NOPE")
       end
+
+    elsif command[0] == "GET"
+
+      raise NotImplementedError
+
+    elsif command[0] == "PUT"
+
+      raise NotImplementedError
 
     end
   end
