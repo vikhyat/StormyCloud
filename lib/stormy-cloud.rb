@@ -13,7 +13,7 @@ class StormyCloud
     @map    = lambda do |t|
       raise NotImplementedError.new("map was not specified")
     end
-    @reduce = lambda do |mutex, r|
+    @reduce = lambda do |r|
       raise NotImplementedError.new("reduce was not specified")
     end
 
@@ -92,7 +92,9 @@ class StormyCloud
     if block
       @reduce = block
     else
-      @reduce.call(@reduce_mutex, result)
+      @reduce_mutex.synchronize do
+        @reduce.call(result)
+      end
     end
   end
 end

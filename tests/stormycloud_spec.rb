@@ -77,12 +77,12 @@ describe StormyCloud do
 
     it "should raise ArgumentError when called without a result and block" do
       expect { @sc.reduce }.to raise_error(ArgumentError)
-      @sc.reduce {|mutex, r| r + 50 }
+      @sc.reduce {|r| r + 50 }
       expect { @sc.reduce }.to raise_error(ArgumentError)
     end
     
     it "should accept a block and save it" do
-      @sc.reduce {|mutex, r| mutex.synchronize { r + 50 } }
+      @sc.reduce {|r| r + 50 }
       @sc.reduce(23).should == 73
     end
   end

@@ -22,9 +22,9 @@ StormyCloud.new("192.168.1.6") do |c|
   end
 
   # Reduce the results together.
-  c.reduce do |mutex, r|
+  c.reduce do |r|
     @sum ||= 0
-    mutex.synchronize { @sum += r }
+    @sum += r
   end
 
 end
