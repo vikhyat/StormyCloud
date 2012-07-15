@@ -43,7 +43,7 @@ class StormyCloudTransport
     command = unserialize(string)
     
     if (not command.kind_of?(Array)) or valid_commands.include? command[0]
-      # The command is valid.
+      # The command is invalid.
       return serialize("NOPE")
     end
 
