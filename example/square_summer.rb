@@ -9,6 +9,10 @@ StormyCloud.new("192.168.1.6") do |c|
   # The default value is 15 seconds.
   c.config :wait, 20
 
+  # Enable "debug" mode, which will run the entire job sequentially on a single
+  # computer. This is useful for testing.
+  c.config :debug, true
+
   # Split the problem into a number of smaller tasks which will be solved by
   # the nodes in parallel.
   c.split do
