@@ -5,8 +5,8 @@ class StormyCloud
       :wait => 15
     }
 
-    @generate = lambda do
-      raise NotImplementedError.new("generate was not specified")
+    @split = lambda do
+      raise NotImplementedError.new("split was not specified")
     end
     @perform  = lambda do
       raise NotImplementedError.new("perform was not specified")
@@ -46,23 +46,23 @@ class StormyCloud
   # When called with a block, save that block for later usage. When called
   # without a block, use the block saved earlier to generate a list of tasks.
   # Raise a TypeError if the block doesn't return an array. 
-  def generate(&block)
+  def split(&block)
     if block
-      @generate = block
+      @split = block
     else
-      _generate
+      _split
     end
   end
 
-  # Actually call the block set using the generate method. Check whether the
+  # Actually call the block set using the split method. Check whether the
   # value generated is actually an array before returning it, if it isn't
   # raise a TypeError.
-  def _generate
-    tasks = @generate.call
+  def _split
+    tasks = @split.call
     if tasks.kind_of? Array
       tasks
     else
-      raise TypeError, "generate should return an array"
+      raise TypeError, "split should return an array"
     end
   end
 

@@ -9,9 +9,9 @@ StormyCloud.new("192.168.1.6") do |c|
   # The default value is 15 seconds.
   c.config :wait, 20
 
-  # Generate a number of sub-problems to be solved in parallel. Each task will
-  # be described by a single integer which is to be squared.
-  c.generate do
+  # Split the problem into a number of smaller tasks which will be solved by
+  # the nodes in parallel.
+  c.split do
     (1..20).to_a
   end
 
