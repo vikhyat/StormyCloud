@@ -86,4 +86,19 @@ describe StormyCloud do
       @sc.reduce(23).should == 73
     end
   end
+
+  describe "#finally" do
+    before(:each) do
+      @sc = StormyCloud.new("127.0.0.1")
+    end
+
+    it "should return nil when not defined" do
+      @sc.finally.should == nil
+    end
+
+    it "should accept a block and save it" do
+      @sc.finally { 42 }
+      @sc.finally.should == 42
+    end
+  end
 end

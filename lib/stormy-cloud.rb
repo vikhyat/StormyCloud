@@ -7,15 +7,16 @@ class StormyCloud
       :wait => 15
     }
 
-    @split  = lambda do
+    @split    = lambda do
       raise NotImplementedError.new("split was not specified")
     end
-    @map    = lambda do |t|
+    @map      = lambda do |t|
       raise NotImplementedError.new("map was not specified")
     end
-    @reduce = lambda do |r|
+    @reduce   = lambda do |r|
       raise NotImplementedError.new("reduce was not specified")
     end
+    @finally  = lambda { nil }
 
     @reduce_mutex = Mutex.new
 
@@ -101,6 +102,16 @@ class StormyCloud
       @reduce_mutex.synchronize do
         @reduce.call(result)
       end
+    end
+  end
+
+  # When called with a block, save it for later use. Otherwise, call the
+  # block which was saved earlier.
+  def finally(&block)
+    if block
+      @finally = block
+    else
+      @finally.call
     end
   end
 end

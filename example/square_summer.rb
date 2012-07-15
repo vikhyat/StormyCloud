@@ -27,4 +27,8 @@ StormyCloud.new("192.168.1.6") do |c|
     @sum += r
   end
 
+  # Print the result when it is computed.
+  c.finally do
+    puts @sum
+  end
 end
