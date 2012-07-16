@@ -5,6 +5,7 @@ describe StormyCloudTransport do
     it "should assign a random identifier" do
       t = StormyCloudTransport.new
       t.secret.should_not == nil
+      t.identifier.should_not == nil
     end
   end
 

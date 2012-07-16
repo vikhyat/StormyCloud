@@ -41,7 +41,7 @@ class StormyCloudTransport
   #   PUT(identifier, task, result)
   #                             -> return the result of a task to the server.
   #
-  def handler(string)
+  def handle(string)
     valid_commands = ["HELLO"]
     command = unserialize(string)
     
