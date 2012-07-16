@@ -1,9 +1,10 @@
 require 'thread'
 
 class StormyCloud
-  attr_reader :result
+  attr_reader :result, :name, :server
 
-  def initialize(server)
+  def initialize(name, server)
+    @name   = name
     @server = server
     @result = nil
     @config = {

@@ -3,7 +3,7 @@ require_relative '../lib/stormy-cloud'
 describe StormyCloud do
   describe "#config" do
     before(:each) do
-      @sc = StormyCloud.new("127.0.0.1")
+      @sc = StormyCloud.new("test", "127.0.0.1")
     end
 
     it "should return the default value when nothing is set" do
@@ -36,7 +36,7 @@ describe StormyCloud do
 
   describe "#split" do
     before(:each) do
-      @sc = StormyCloud.new("127.0.0.1")
+      @sc = StormyCloud.new("test", "127.0.0.1")
     end
     
     it "should raise NotImplementedError if no split function is given" do
@@ -56,7 +56,7 @@ describe StormyCloud do
 
   describe "#map" do
     before(:each) do
-      @sc = StormyCloud.new("127.0.0.1")
+      @sc = StormyCloud.new("test", "127.0.0.1")
     end
 
     it "should raise NotImplementedError when not set" do
@@ -77,7 +77,7 @@ describe StormyCloud do
 
   describe "#reduce" do
     before(:each) do
-      @sc = StormyCloud.new("127.0.0.1")
+      @sc = StormyCloud.new("test", "127.0.0.1")
     end
 
     it "should raise NotImplementedError when not set" do
@@ -98,7 +98,7 @@ describe StormyCloud do
 
   describe "#finally" do
     before(:each) do
-      @sc = StormyCloud.new("127.0.0.1")
+      @sc = StormyCloud.new("test", "127.0.0.1")
     end
 
     it "should return nil when not defined" do
@@ -113,7 +113,7 @@ describe StormyCloud do
 
   describe "#run" do
     it "should run on a single machine in debug mode, returning the finally value" do
-      @sc = StormyCloud.new("127.0.0.1")
+      @sc = StormyCloud.new("test", "127.0.0.1")
       @sc.config :debug, true
       @sc.split { (1..42).to_a }
       @sc.map {|t| 1 }
@@ -123,7 +123,7 @@ describe StormyCloud do
     end
 
     it "should automatically be run when configuration is done using a block" do
-      sc = StormyCloud.new("127.0.0.1") do |c|
+      sc = StormyCloud.new("test", "127.0.0.1") do |c|
         c.config :debug, true
         c.split { (1..42).to_a }
         c.map {|t| 1 }
