@@ -107,9 +107,15 @@ class StormyCloudTransport
 
       if not @completed.include? task
         @completed.add task
-        @sc.reduce(task, result)
+        @stormy_cloud.reduce(task, result)
       end
     end
+  end
+
+  # Is the job complete? This is true if the queue is empty and the assigned
+  # list is empty.
+  def complete?
+    @queue.empty? and @assigned.empty?
   end
 
   # This method is used by the server to handle communication with clients.

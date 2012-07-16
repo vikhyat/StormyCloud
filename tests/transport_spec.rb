@@ -38,6 +38,29 @@ describe StormyCloudTransport do
     end
   end
 
+  describe "#complete?" do
+    it "should be true when there are no tasks" do
+      sc = StormyCloud.new("test", "localhost")
+      sc.split { [] }
+      t = StormyCloudTransport.new(sc)
+      t.split
+      t.complete?.should == true
+    end
+
+    it "should be false when there are jobs in the queue or assigned list" do
+      sc = StormyCloud.new("test", "localhost")
+      sc.split { [1] }
+      sc.reduce {|t, r| 42 }
+      t = StormyCloudTransport.new(sc)
+      t.split
+      t.complete?.should == false
+      t.get
+      t.complete?.should == false
+      t.put(1, 3)
+      t.complete?.should == true
+    end
+  end
+
   describe "#handle" do
     it "should handle commands correctly" do
       sc = StormyCloud.new("test", "localhost")
