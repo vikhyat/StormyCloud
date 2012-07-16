@@ -135,7 +135,7 @@ class StormyCloudTransport
 
     elsif command[0] == "GET"
 
-      raise NotImplementedError
+      return serialize(get)
 
     elsif command[0] == "PUT"
 

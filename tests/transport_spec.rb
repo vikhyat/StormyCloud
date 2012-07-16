@@ -43,6 +43,7 @@ describe StormyCloudTransport do
       sc = StormyCloud.new("test", "localhost")
       sc.split { [1] }
       t = StormyCloudTransport.new(sc)
+      t.split
       {
         ["HELLO", t.identifier]               => t.identifier,
         ["KILL", t.identifier, "invalid id"]  => "NOPE",
