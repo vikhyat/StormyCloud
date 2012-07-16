@@ -81,18 +81,18 @@ describe StormyCloud do
     end
 
     it "should raise NotImplementedError when not set" do
-      expect { @sc.reduce(23) }.to raise_error(NotImplementedError)
+      expect { @sc.reduce(23, 48) }.to raise_error(NotImplementedError)
     end
 
     it "should raise ArgumentError when called without a result and block" do
       expect { @sc.reduce }.to raise_error(ArgumentError)
-      @sc.reduce {|r| r + 50 }
+      @sc.reduce {|t, r| r + 50 }
       expect { @sc.reduce }.to raise_error(ArgumentError)
     end
     
     it "should accept a block and save it" do
-      @sc.reduce {|r| r + 50 }
-      @sc.reduce(23).should == 73
+      @sc.reduce {|t, r| r + 50 }
+      @sc.reduce(42, 23).should == 73
     end
   end
 
@@ -117,7 +117,7 @@ describe StormyCloud do
       @sc.config :debug, true
       @sc.split { (1..42).to_a }
       @sc.map {|t| 1 }
-      @sc.reduce {|r| @s ||= 0; @s += r }
+      @sc.reduce {|t, r| @s ||= 0; @s += r }
       @sc.finally { @s }
       @sc.run.should == 42
     end
@@ -127,7 +127,7 @@ describe StormyCloud do
         c.config :debug, true
         c.split { (1..42).to_a }
         c.map {|t| 1 }
-        c.reduce {|r| @s ||= 0; @s += r }
+        c.reduce {|t, r| @s ||= 0; @s += r }
         c.finally { @s }
       end
       sc.result.should == 42

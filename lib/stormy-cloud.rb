@@ -19,7 +19,7 @@ class StormyCloud
     @map      = lambda do |t|
       raise NotImplementedError.new("map was not specified")
     end
-    @reduce   = lambda do |r|
+    @reduce   = lambda do |t, r|
       raise NotImplementedError.new("reduce was not specified")
     end
     @finally  = lambda { nil }
@@ -117,8 +117,8 @@ class StormyCloud
   # When called with a block, save the block for later user. When called
   # with a single argument, call the block saved earlier. Raise an
   # ArgumentError if called without a block and task.
-  def reduce(result=nil, &block)
-    if block.nil? and result.nil?
+  def reduce(task=nil, result=nil, &block)
+    if block.nil? and (task.nil? or result.nil?)
       raise ArgumentError, "reduce called without a result and block"
     end
 
@@ -126,7 +126,7 @@ class StormyCloud
       @reduce = block
     else
       @reduce_mutex.synchronize do
-        @reduce.call(result)
+        @reduce.call(task, result)
       end
     end
   end
@@ -144,7 +144,7 @@ class StormyCloud
   # Run the job!
   def run
     if config(:debug)
-      split.map {|t| map(t) }.each {|r| reduce(r) }
+      split.each {|t| reduce(t, map(t)) }
       @result = finally
     else
       raise NotImplementedError
