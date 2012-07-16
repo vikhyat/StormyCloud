@@ -32,7 +32,7 @@ class StormyCloudTransport
   # Run the split method on the stormy cloud, and save the results into a
   # queue.
   def split
-    
+    @stormy_cloud.split.each {|x| @queue.push x }
   end
 
   # This method is used by the server to handle communication with clients.

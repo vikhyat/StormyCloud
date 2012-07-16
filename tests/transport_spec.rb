@@ -20,6 +20,13 @@ describe StormyCloudTransport do
 
   describe "#split" do
     it "should create a queue with tasks" do
+      sc = StormyCloud.new("localhost")
+      sc.split { [1, 2, 3] }
+      t = StormyCloudTransport.new(sc)
+      t.split
+      arr = []
+      3.times { arr.push t.queue.pop }
+      arr.sort.should == [1, 2, 3]
     end
   end
 end
