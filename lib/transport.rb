@@ -152,17 +152,21 @@ class StormyCloudTransport
     # Update the time of last access.
     @clients[command[1]] = Time.now
 
-    if    command[0] == "HELLO"
+    if command[0] == "HELLO"
 
-      return serialize(identifier)
+      if command.length == 2
+        return serialize(identifier)
+      else
+        return serialize("INVALID COMMAND")
+      end
 
     elsif command[0] == "KILL"
 
-      if command[2] == @secret
+      if (command[2] == @secret) and (command.length == 3)
         @mode = :client
         return serialize("OKAY")
       else
-        return serialize("NOPE")
+        return serialize("INVALID COMMAND")
       end
 
     elsif command[0] == "GET"
@@ -171,8 +175,16 @@ class StormyCloudTransport
 
     elsif command[0] == "PUT"
 
-      raise NotImplementedError
+      task = command[2]
+      result = command[3]
 
+      if command.length != 4
+        return serialize("INVALID COMMAND")
+      else
+        put(task, result)
+        return serialize("OKAY")
+      end
+      
     end
   end
 

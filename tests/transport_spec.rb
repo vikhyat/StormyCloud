@@ -89,12 +89,15 @@ describe StormyCloudTransport do
     it "should handle commands correctly" do
       sc = StormyCloud.new("test", "localhost")
       sc.split { [1] }
+      sc.reduce {|t, r| 42 }
       t = StormyCloudTransport.new(sc)
       t.split
       {
         ["HELLO", t.identifier]               => t.identifier,
-        ["KILL", t.identifier, "invalid id"]  => "NOPE",
+        ["KILL", t.identifier, "invalid id"]  => "INVALID COMMAND",
         ["GET", t.identifier]                 => 1,
+        ["PUT", t.identifier, 1, 42]          => "OKAY",
+        ["PUT", "invalid format"]             => "INVALID COMMAND",
         ["KILL", t.identifier, t.secret]      => "OKAY"
       }.each do |k, v|
         t.unserialize(t.handle(t.serialize(k))).should == v
