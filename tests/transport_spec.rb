@@ -18,6 +18,26 @@ describe StormyCloudTransport do
     end
   end
 
+  describe "#get" do
+    before(:each) do
+      @sc = StormyCloud.new("test", "localhost")
+      @sc.split { [1,2,3] }
+    end
+
+    it "should get tasks" do
+      t = StormyCloudTransport.new(@sc)
+      t.split
+      [t.get, t.get, t.get].sort.should == [1,2,3]
+    end
+
+    it "should return from the assigned list when the queue is empty" do
+      t = StormyCloudTransport.new(@sc)
+      t.split
+      3.times { t.get }
+      t.get.should_not == nil
+    end
+  end
+
   describe "#split" do
     it "should create a queue with tasks" do
       sc = StormyCloud.new("test", "localhost")

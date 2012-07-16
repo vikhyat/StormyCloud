@@ -1,7 +1,8 @@
-require 'securerandom'
-require 'digest'
 require 'base64'
+require 'digest'
 require 'msgpack'
+require 'securerandom'
+require 'set'
 require 'thread'
 
 # Define the basic outline of a transport, and provide serialization and stuff
@@ -24,6 +25,12 @@ class StormyCloudTransport
     @queue        = Queue.new
     # A list of tasks that are currently being worked on.
     @assigned     = []
+    # A mutex to synchronize access to the queue, assigned list and completed
+    # list.
+    @queue_mutex  = Mutex.new
+    # A set of completed tasks.
+    # TODO: This needs to be synchronized with a file for persistency.
+    @completed    = Set.new
   end
 
   # A unique identifier derived from the secret.
@@ -35,6 +42,53 @@ class StormyCloudTransport
   # queue.
   def split
     @stormy_cloud.split.each {|x| @queue.push x }
+  end
+
+  # Remove tasks from the queue until we encounter one which is not on the
+  # completed list. Add this task to the assigned list, and spawn a thread
+  # to move it back into the queue after a timeout.
+  # If the queue is empty, return a random task from the assigned list.
+  # If both the queue and the assigned list are empty, return nil.
+  def get
+    @queue_mutex.synchronize do
+      if @queue.empty?
+
+        if @assigned.length == 0
+          return nil
+        else
+          task = @assigned.sample
+          _spawn_remover(task)
+          return task
+        end
+
+      else
+
+        task = @queue.pop
+        if @completed.include? task
+          return get
+        else
+          _spawn_remover(task)
+          @assigned.push task
+          return task
+        end
+
+      end
+    end
+  end
+
+  # Spawn a thread that will wait for some time and then remove the task from
+  # the assigned list and add it back to the queue if it is still in the 
+  # assigned list.
+  def _spawn_remover(task)
+    Thread.new do
+      sleep @stormy_cloud.config(:wait)
+      @queue_mutex.synchronize do
+        if @assigned.include? task
+          @assigned.delete(task)
+          @queue.push(task)
+        end
+      end
+    end
   end
 
   # This method is used by the server to handle communication with clients.
