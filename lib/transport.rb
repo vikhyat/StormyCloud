@@ -13,15 +13,17 @@ class StormyCloudTransport
   # instantiation.
   def initialize(stormy_cloud)
     # Generate a secret that will be used to shutdown the server.
-    @secret     = SecureRandom.hex(32)
+    @secret       = SecureRandom.hex(32)
     # A hash of identifier -> time of last server access.
-    @clients    = {}
+    @clients      = {}
     # Are we operating in server mode or client mode?
-    @mode       = :server
+    @mode         = :server
     # Save `stormy_cloud`.
     @stormy_cloud = stormy_cloud
     # Create a new empty queue for storing sub tasks.
-    @queue = Queue.new
+    @queue        = Queue.new
+    # A list of tasks that are currently being worked on.
+    @assigned     = []
   end
 
   # A unique identifier derived from the secret.
