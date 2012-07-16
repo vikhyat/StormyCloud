@@ -2,6 +2,7 @@ require 'securerandom'
 require 'digest'
 require 'base64'
 require 'msgpack'
+require 'thread'
 
 # Define the basic outline of a transport, and provide serialization and stuff
 # so that code doesn't have to be duplicated in every transport definition.
@@ -19,11 +20,19 @@ class StormyCloudTransport
     @mode       = :server
     # Save `stormy_cloud`.
     @stormy_cloud = stormy_cloud
+    # Create a new empty queue for storing sub tasks.
+    @queue = Queue.new
   end
 
   # A unique identifier derived from the secret.
   def identifier
     Digest::MD5.hexdigest("Omikron" + @secret + "9861")
+  end
+
+  # Run the split method on the stormy cloud, and save the results into a
+  # queue.
+  def _split
+    
   end
 
   # This method is used by the server to handle communication with clients.
