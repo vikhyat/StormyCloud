@@ -1,4 +1,4 @@
-require_relative '../lib/transports.rb'
+require_relative '../lib/transport.rb'
 
 describe StormyCloudTransport do
   describe "#initialize" do
