@@ -137,7 +137,7 @@ class StormyCloud
     if block
       @finally = block
     else
-      @finally.call
+      @result = @finally.call
     end
   end
 

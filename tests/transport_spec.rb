@@ -38,6 +38,30 @@ describe StormyCloudTransport do
     end
   end
 
+  describe "#put" do
+    before(:each) do
+      @sc = StormyCloud.new("test", "localhost")
+      @sc.split { [1] }
+      @sc.reduce {|t, r| @s ||= 0; @s += 42 }
+      @sc.finally { @s }
+      @t = StormyCloudTransport.new(@sc)
+      @t.split
+    end
+
+    it "should call reduce on each completed task once" do
+      @t.get
+      @t.put(1, 42)
+      @t.put(1, 42)
+      @sc.finally.should == 42
+    end
+
+    it "should call finally when the job is complete" do
+      @t.get
+      @t.put(1, 42)
+      @sc.result.should == 42
+    end
+  end
+
   describe "#complete?" do
     it "should be true when there are no tasks" do
       sc = StormyCloud.new("test", "localhost")

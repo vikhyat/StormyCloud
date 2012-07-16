@@ -97,6 +97,7 @@ class StormyCloudTransport
   # If the task is not on the assigned list and is also not on the completed
   # list, add it to the completed list and call the reduce method.
   # If the task is already in the completed set, do nothing.
+  # If the job is complete, call finally.
   def put(task, result)
     @queue_mutex.synchronize do
       return if @completed.include? task
@@ -109,6 +110,10 @@ class StormyCloudTransport
         @completed.add task
         @stormy_cloud.reduce(task, result)
       end
+    end
+
+    if complete?
+      @stormy_cloud.finally
     end
   end
 
