@@ -109,12 +109,12 @@ class StormyCloudTransport
   #                             -> return the result of a task to the server.
   #
   def handle(string)
-    valid_commands = ["HELLO"]
+    valid_commands = ["HELLO", "KILL", "GET", "PUT"]
     command = unserialize(string)
     
-    if (not command.kind_of?(Array)) or valid_commands.include? command[0]
+    if not (command.kind_of?(Array) and valid_commands.include? command[0])
       # The command is invalid.
-      return serialize("NOPE")
+      return serialize("INVALID COMMAND")
     end
 
     # Update the time of last access.

@@ -38,6 +38,22 @@ describe StormyCloudTransport do
     end
   end
 
+  describe "#handle" do
+    it "should handle commands correctly" do
+      sc = StormyCloud.new("test", "localhost")
+      sc.split { [1] }
+      t = StormyCloudTransport.new(sc)
+      {
+        ["HELLO", t.identifier]               => t.identifier,
+        ["KILL", t.identifier, "invalid id"]  => "NOPE",
+        ["GET", t.identifier]                 => 1,
+        ["KILL", t.identifier, t.secret]      => "OKAY"
+      }.each do |k, v|
+        t.unserialize(t.handle(t.serialize(k))).should == v
+      end
+    end
+  end
+
   describe "#split" do
     it "should create a queue with tasks" do
       sc = StormyCloud.new("test", "localhost")
