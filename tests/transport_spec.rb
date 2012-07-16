@@ -17,4 +17,9 @@ describe StormyCloudTransport do
       end
     end
   end
+
+  describe "#split" do
+    it "should create a queue with tasks" do
+    end
+  end
 end

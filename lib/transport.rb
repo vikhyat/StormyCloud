@@ -7,7 +7,7 @@ require 'thread'
 # Define the basic outline of a transport, and provide serialization and stuff
 # so that code doesn't have to be duplicated in every transport definition.
 class StormyCloudTransport
-  attr_reader :secret, :stormy_cloud
+  attr_reader :secret, :stormy_cloud, :queue
   # This method should be "extended" by the specific transports, i.e. they
   # should first call super and then perform any transport-specific
   # instantiation.
@@ -31,7 +31,7 @@ class StormyCloudTransport
 
   # Run the split method on the stormy cloud, and save the results into a
   # queue.
-  def _split
+  def split
     
   end
 
