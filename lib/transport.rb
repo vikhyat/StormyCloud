@@ -6,21 +6,23 @@ require 'msgpack'
 # Define the basic outline of a transport, and provide serialization and stuff
 # so that code doesn't have to be duplicated in every transport definition.
 class StormyCloudTransport
-  attr_reader :secret
+  attr_reader :secret, :stormy_cloud
   # This method should be "extended" by the specific transports, i.e. they
   # should first call super and then perform any transport-specific
   # instantiation.
-  def initialize
+  def initialize(stormy_cloud)
     # Generate a secret that will be used to shutdown the server.
     @secret     = SecureRandom.hex(32)
     # A hash of identifier -> time of last server access.
     @clients    = {}
     # Are we operating in server mode or client mode?
     @mode       = :server
+    # Save `stormy_cloud`.
+    @stormy_cloud = stormy_cloud
   end
 
   # A unique identifier derived from the secret.
-  def idenfifier
+  def identifier
     Digest::MD5.hexdigest("Omikron" + @secret + "9861")
   end
 
