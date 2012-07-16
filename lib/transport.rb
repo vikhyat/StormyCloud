@@ -91,6 +91,27 @@ class StormyCloudTransport
     end
   end
 
+  # Accept the results of a task from a node. If the task is still in the
+  # assigned list, get it out of there, put it in the completed set and
+  # call the reduce method.
+  # If the task is not on the assigned list and is also not on the completed
+  # list, add it to the completed list and call the reduce method.
+  # If the task is already in the completed set, do nothing.
+  def put(task, result)
+    @queue_mutex.synchronize do
+      return if @completed.include? task
+
+      if @assigned.include? task
+        @assigned.delete task
+      end
+
+      if not @completed.include? task
+        @completed.add task
+        @sc.reduce(task, result)
+      end
+    end
+  end
+
   # This method is used by the server to handle communication with clients.
   # It should not be overridden by specific transports. It accepts a string
   # which is a serialized command sent by the server, and returns another
