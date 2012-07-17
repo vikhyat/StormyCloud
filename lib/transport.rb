@@ -196,6 +196,14 @@ class StormyCloudTransport
     raise NotImplementedError
   end
 
+  # In client mode, this method sends a string to the server and returns the
+  # server's response. Objects will be serialized before being passed to this
+  # method.
+  # This method should be implemented by the specific transport.
+  def send_message(string)
+    raise NotImplementedError
+  end
+
   # Serialize a request into a string by doing MsgPack + Base64 encoding.
   # This can be overridden by the specific transport if the protocol used is
   # such that this mode of serialization is disadvantageous.
