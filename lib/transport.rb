@@ -9,6 +9,8 @@ require 'thread'
 # so that code doesn't have to be duplicated in every transport definition.
 class StormyCloudTransport
   attr_reader :secret, :stormy_cloud, :queue
+  attr_accessor :mode
+
   # This method should be "extended" by the specific transports, i.e. they
   # should first call super and then perform any transport-specific
   # instantiation.
@@ -215,18 +217,21 @@ class StormyCloudTransport
     MessagePack.unpack(Base64::decode64(string))
   end
 
+  # Block until the job is complete -- meant for usage by the server.
+  def block_until_complete
+    sleep(1) while not complete?
+  end
+
   # Actually run the task.
   # First, we check whether we are currently the server by asking the server
   # for its identifier and seeing if it matches ours.
   def run
     initialize_server
-    if send_message(["HELLO", identifier]) == identifier
-      # Do servery things.
-      
+    if (@mode == :server) and (send_message(["HELLO", identifier]) == identifier)
+      block_until_complete
     else
       kill_server
       @mode = :client
       # Do clienty things.
     end
   end
-end
