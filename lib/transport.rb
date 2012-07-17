@@ -190,17 +190,27 @@ class StormyCloudTransport
 
   # Initialize a server that will accept commands from nodes and forward them
   # to the handle method. The server should operate in a loop that is broken
-  # when @mode is no longer :server.
+  # when @mode is no longer :server. This method should be nonblocking.
   # This method should be implemented by the specific transport.
   def initialize_server
     raise NotImplementedError
   end
 
-  # In client mode, this method sends a string to the server and returns the
-  # server's response. Objects will be serialized before being passed to this
-  # method.
+  # The server should be killed when this method is called.
   # This method should be implemented by the specific transport.
-  def send_message(string)
+  def kill_server
+    raise NotImplementedError
+  end
+
+  # A wrapper around the raw_send_message method that does serialization and
+  # unserialization.
+  def send_message(object)
+    unserialize(raw_send_message(serialize(object)))
+  end
+
+  # Send a raw string to the server, and return the response. 
+  # This method should be implemented by the specific transport.
+  def raw_send_message(string)
     raise NotImplementedError
   end
 
@@ -215,5 +225,19 @@ class StormyCloudTransport
   # method.
   def unserialize(string)
     MessagePack.unpack(Base64::decode64(string))
+  end
+
+  # Actually run the task.
+  # First, we check whether we are currently the server by asking the server
+  # for its identifier and seeing if it matches ours.
+  def run
+    initialize_server
+    if send_message(["HELLO", identifier]) == identifier
+      kill_server
+      @mode = :client
+      # Do clienty things.
+    else
+      # Do servery things.
+    end
   end
 end
