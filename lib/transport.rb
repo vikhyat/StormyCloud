@@ -221,11 +221,12 @@ class StormyCloudTransport
   def run
     initialize_server
     if send_message(["HELLO", identifier]) == identifier
+      # Do servery things.
+      
+    else
       kill_server
       @mode = :client
       # Do clienty things.
-    else
-      # Do servery things.
     end
   end
 end
