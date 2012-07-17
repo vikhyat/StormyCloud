@@ -8,7 +8,7 @@ require 'thread'
 # Define the basic outline of a transport, and provide serialization and stuff
 # so that code doesn't have to be duplicated in every transport definition.
 class StormyCloudTransport
-  attr_reader :secret, :stormy_cloud, :queue
+  attr_reader :secret, :stormy_cloud, :queue, :task_count
   attr_accessor :mode
 
   # This method should be "extended" by the specific transports, i.e. they
@@ -33,6 +33,9 @@ class StormyCloudTransport
     # A set of completed tasks.
     # TODO: This needs to be synchronized with a file for persistence.
     @completed    = Set.new
+    # Statistics.
+    @task_count = 0
+    @completed_count = 0
   end
 
   # A unique identifier derived from the secret.
@@ -43,7 +46,9 @@ class StormyCloudTransport
   # Run the split method on the stormy cloud, and save the results into a
   # queue.
   def split
-    @stormy_cloud.split.each {|x| @queue.push x }
+    tasks = @stormy_cloud.split
+    @task_count = tasks.length
+    tasks.each {|x| @queue.push x }
   end
 
   # Remove tasks from the queue until we encounter one which is not on the
@@ -219,7 +224,10 @@ class StormyCloudTransport
 
   # Block until the job is complete -- meant for usage by the server.
   def block_until_complete
-    sleep(1) while not complete?
+    while not complete?
+      puts "#{@completed.length}/#{@task_count} done."
+      sleep 1
+    end
   end
 
   def result

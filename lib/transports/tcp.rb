@@ -18,10 +18,16 @@ class StormyCloudTCPTransport < StormyCloudTransport
   end
 
   def raw_send_message(string)
-    s = TCPSocket.new(@stormy_cloud.server, @stormy_cloud.config(:port))
-    s.puts string
-    res = s.gets
-    s.close
-    res
+    begin
+      s = TCPSocket.new(@stormy_cloud.server, @stormy_cloud.config(:port))
+      s.puts string
+      res = s.gets
+      s.close
+      res
+    rescue
+      STDERR.puts "An error occurred while contacting the server, trying again."
+      sleep 1
+      raw_send_message(string)
+    end
   end
 end

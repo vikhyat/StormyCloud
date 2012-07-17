@@ -1,9 +1,12 @@
 require 'thread'
+['tcp'].each do |t|
+  require_relative "./transports/#{t}.rb"
+end
 
 class StormyCloud
   attr_reader :result, :name, :server
 
-  def initialize(name, server)
+  def initialize(name, server, transport=StormyCloudTCPTransport)
     @name   = name
     @server = server
     @result = nil
@@ -25,6 +28,8 @@ class StormyCloud
     @finally  = lambda { nil }
 
     @reduce_mutex = Mutex.new
+
+    @transport_class = transport
 
     if block_given?
       yield self
@@ -147,7 +152,14 @@ class StormyCloud
       split.each {|t| reduce(t, map(t)) }
       @result = finally
     else
-      raise NotImplementedError
+      if ['node', 'server'].include? ARGV[0]
+        @transport = @transport_class.new(self)
+        @transport.mode = ARGV[0].to_sym
+        @transport.run
+      else
+        puts "ARGV[0] should be the run mode (node or server)."
+        exit
+      end
     end
   end
 end

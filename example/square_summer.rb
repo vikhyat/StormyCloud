@@ -3,15 +3,11 @@
 
 require_relative "../lib/stormy-cloud"
 
-StormyCloud.new("192.168.1.6") do |c|
+StormyCloud.new("square_summation", "192.168.1.3") do |c|
   # Set the time to wait for a node to return a result to 20 seconds.
   # If the node doesn't respond within this time, it is assumed to be dead.
   # The default value is 15 seconds.
   c.config :wait, 20
-
-  # Enable "debug" mode, which will run the entire job sequentially on a single
-  # computer. This is useful for testing.
-  c.config :debug, true
 
   # Split the problem into a number of smaller tasks which will be solved by
   # the nodes in parallel.
@@ -21,7 +17,7 @@ StormyCloud.new("192.168.1.6") do |c|
 
   # Perform a single task.
   c.map do |t|
-    sleep 20 # "work"
+    sleep 2 # "work"
     t**2
   end
 
