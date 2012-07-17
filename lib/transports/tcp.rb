@@ -25,9 +25,15 @@ class StormyCloudTCPTransport < StormyCloudTransport
       s.close
       res
     rescue
-      STDERR.puts "An error occurred while contacting the server, trying again."
-      sleep 1
-      raw_send_message(string)
+      @errors ||= 0
+      @errors += 1
+      if @errors <= 5
+        STDERR.puts "An error occurred while contacting the server, trying again."
+        sleep 1
+        raw_send_message(string)
+      else
+        STDERR.puts "Could not contact the server, exiting."
+      end
     end
   end
 end
