@@ -188,13 +188,11 @@ class StormyCloudTransport
     end
   end
 
-  # Check whether the system running this code is the one that is designated as
-  # the server.
-  # 1. Generate a random string.
-  # 2. Create a "server" that returns the random string.
-  # 3. Ask the server for the random string, and check whether it is the one
-  #    that was generated earlier.
-  def loopback?
+  # Initialize a server that will accept commands from nodes and forward them
+  # to the handle method. The server should operate in a loop that is broken
+  # when @mode is no longer :server.
+  # This method should be implemented by the specific transport.
+  def initialize_server
     raise NotImplementedError
   end
 
