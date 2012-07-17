@@ -31,7 +31,7 @@ class StormyCloudTransport
     # list.
     @queue_mutex  = Mutex.new
     # A set of completed tasks.
-    # TODO: This needs to be synchronized with a file for persistency.
+    # TODO: This needs to be synchronized with a file for persistence.
     @completed    = Set.new
   end
 
