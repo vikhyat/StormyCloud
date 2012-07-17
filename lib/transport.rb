@@ -49,7 +49,7 @@ class StormyCloudTransport
   # to move it back into the queue after a timeout.
   # If the queue is empty, return a random task from the assigned list.
   # If both the queue and the assigned list are empty, return nil.
-  def get
+  def get_task
     @queue_mutex.synchronize do
       if @queue.empty?
 
@@ -98,7 +98,7 @@ class StormyCloudTransport
   # list, add it to the completed list and call the reduce method.
   # If the task is already in the completed set, do nothing.
   # If the job is complete, call finally.
-  def put(task, result)
+  def put_task(task, result)
     @queue_mutex.synchronize do
       return if @completed.include? task
 
@@ -171,7 +171,7 @@ class StormyCloudTransport
 
     elsif command[0] == "GET"
 
-      return serialize(get)
+      return serialize(get_task)
 
     elsif command[0] == "PUT"
 
@@ -181,7 +181,7 @@ class StormyCloudTransport
       if command.length != 4
         return serialize("INVALID COMMAND")
       else
-        put(task, result)
+        put_task(task, result)
         return serialize("OKAY")
       end
       

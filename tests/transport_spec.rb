@@ -18,7 +18,7 @@ describe StormyCloudTransport do
     end
   end
 
-  describe "#get" do
+  describe "#get_task" do
     before(:each) do
       @sc = StormyCloud.new("test", "localhost")
       @sc.split { [1,2,3] }
@@ -27,18 +27,18 @@ describe StormyCloudTransport do
     it "should get tasks" do
       t = StormyCloudTransport.new(@sc)
       t.split
-      [t.get, t.get, t.get].sort.should == [1,2,3]
+      [t.get_task, t.get_task, t.get_task].sort.should == [1,2,3]
     end
 
     it "should return from the assigned list when the queue is empty" do
       t = StormyCloudTransport.new(@sc)
       t.split
-      3.times { t.get }
-      t.get.should_not == nil
+      3.times { t.get_task }
+      t.get_task.should_not == nil
     end
   end
 
-  describe "#put" do
+  describe "#put_task" do
     before(:each) do
       @sc = StormyCloud.new("test", "localhost")
       @sc.split { [1] }
@@ -49,15 +49,15 @@ describe StormyCloudTransport do
     end
 
     it "should call reduce on each completed task once" do
-      @t.get
-      @t.put(1, 42)
-      @t.put(1, 42)
+      @t.get_task
+      @t.put_task(1, 42)
+      @t.put_task(1, 42)
       @sc.finally.should == 42
     end
 
     it "should call finally when the job is complete" do
-      @t.get
-      @t.put(1, 42)
+      @t.get_task
+      @t.put_task(1, 42)
       @sc.result.should == 42
     end
   end
@@ -78,9 +78,9 @@ describe StormyCloudTransport do
       t = StormyCloudTransport.new(sc)
       t.split
       t.complete?.should == false
-      t.get
+      t.get_task
       t.complete?.should == false
-      t.put(1, 3)
+      t.put_task(1, 3)
       t.complete?.should == true
     end
   end
