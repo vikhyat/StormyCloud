@@ -26,7 +26,7 @@ StormyCloud.new("192.168.1.6") do |c|
   end
 
   # Reduce the results together.
-  c.reduce do |r|
+  c.reduce do |t, r|
     @sum ||= 0
     @sum += r
   end

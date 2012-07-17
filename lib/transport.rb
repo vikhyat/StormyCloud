@@ -222,16 +222,29 @@ class StormyCloudTransport
     sleep(1) while not complete?
   end
 
+  def result
+    @stormy_cloud.result
+  end
+
   # Actually run the task.
   # First, we check whether we are currently the server by asking the server
   # for its identifier and seeing if it matches ours.
   def run
-    initialize_server
-    if (@mode == :server) and (send_message(["HELLO", identifier]) == identifier)
+    if @mode == :server
+      split
+      initialize_server
       block_until_complete
-    else
       kill_server
+    else
       @mode = :client
       # Do clienty things.
+      loop do
+        task = send_message(["GET", identifier])
+        break if task == nil
+        result = @stormy_cloud.map(task)
+        send_message(["PUT", identifier, task, result])
+      end
     end
   end
+end
+
