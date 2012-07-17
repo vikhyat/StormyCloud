@@ -1,49 +1,95 @@
-Goal
-----
+StormyCloud
+-----------
 
-Make it ridiculously easy to write distributed applications in Ruby.
+**Goal:** Make it _ridiculously_ easy to write simple distributed application
+in Ruby.
 
-
-How it works
+Installation
 ------------
 
-There are only two types of entities involved: a single central server and several nodes.
+**Todo** Package this as a gem.
 
-The user MUST provide the following blocks of code:
+Usage
+-----
 
-- `generate`
-- `perform`
-- `save`
+Here's an example:
 
-The first method, `generate` should return an array of objects, each of which corresponds to
-a single task to be performed on a node. 
+```ruby
+StormyCloud.new("square_summation", "10.6.2.213") do |c|
 
-The second method, `perform` should accept one of the objects returned by `generate`, 
-perform whatever task needs to be performed and return another object which is the output.
+  c.split { (1..1000).to_a }
 
-The last method, `save`, will be run on the server whenever a node returns a result. It 
-accepts a Mutex and the output of `perform`, and should postprocess and save the result.
+  c.map do |t|
+    sleep 2   # do some work
+    t ** 2
+  end
 
-When a server is instantiated, it runs `generate`, serializes each task using MessagePack 
-and encodes the resulting binary string into Base64, and then adds all of these tasks to a 
-queue. Tasks which have already been completed (these are saved to disk) are not saved to 
-this queue -- this means that the server can recover from crashes gracefully.
+  c.reduce do |t, r|
+    @sum ||= 0
+    @sum += r
+  end
 
-Upon instantiation, each node will negotiate an access token from the server and use this 
-token during every future interaction with the server. This token is used so that the server
-can keep track of the number of active nodes.
+  c.finally do
+    puts @sum
+  end
 
-Each node will run a loop, repeatedly fetching tasks from the server until there are no more
-tasks left. During each iteration the node fetches a task from the server, executes it and 
-returns the result to the server. When a task is handed over to a node, the server moves it
-to a pending array -- if the node doesn't reply within a certain time it is moved back onto
-the queue.
+end
+```
 
-When the node replies with the result, the server removes the task from the pending array if
-it is in there. It then proceeds to check whether the task is in the list of completed tasks
- -- if it is there the result is thrown away, otherwise the result is saved and the task is 
-added to the list of completed tasks which is synced onto the hard disk.
+You _must_ specify the three blocks, `split`, `map` and `reduce`. The `finally`
+block is optional, and will be called when the job is completed.
 
-When the server is finished with all the tasks, it returns a special message to the nodes 
-which causes then to exit.
+The `split` function must return an array of smaller sub-tasks which can be
+completed in parallel.
 
+The `map` function must take one of these sub-tasks as input and return the
+result of the computation.
+
+The `reduce` block is called once for each task and its result.
+
+`split`, `reduce` and `finally` will be run on a central server, but `map` will
+be run on worker nodes.
+
+Configuration
+-------------
+
+Some configuration variables can be set inside the block, as shown below:
+
+```ruby
+StormyCloud.new("square_summation", "10.6.2.213") do |c|
+  c.config :wait, 20
+  c.config :port, 9861
+  c.config :debug, true
+
+  [...]
+end
+```
+
+Currently, the only supported configuration variables are:
+
+  * **wait**: Amount of time to wait for a result from the node before
+returning a task to the node.
+  * **port**: When using the TCP transport, this is the TCP port used on the
+server.
+  * **debug**: When this is set to true, the entire task will be run on a
+single machine sequentially.
+
+Running a Job
+-------------
+
+Running a job is as simple as copying a file onto the nodes and running a
+command.
+
+First, make sure that the machine that will act as the central server and the
+ones which will be nodes all have Ruby installed along with the gem. Also make
+sure the script contains the correct IP address of the actual server.
+
+Start the server by running:
+
+    $ ruby job.rb server
+
+Then log in to each of the nodes and run the following commands:
+
+    $ ruby job.rb node
+
+**TODO** Web-based progress tracking.
