@@ -33,6 +33,7 @@ class StormyCloudTCPTransport < StormyCloudTransport
         raw_send_message(string)
       else
         STDERR.puts "Could not contact the server, exiting."
+        exit
       end
     end
   end
