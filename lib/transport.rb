@@ -133,15 +133,12 @@ class StormyCloudTransport
   #
   # The following actions are supported:
   #   HELLO(identifier)         -> get the server's identifier.
-  #   KILL(identifier, secret)  -> if the secret matches the current server's
-  #                                secret, switch to client mode and shut down
-  #                                the server.
   #   GET(identifier)           -> get a new task from the server.
   #   PUT(identifier, task, result)
   #                             -> return the result of a task to the server.
   #
   def handle(string)
-    valid_commands = ["HELLO", "KILL", "GET", "PUT"]
+    valid_commands = ["HELLO", "GET", "PUT"]
     command = unserialize(string)
     
     if not (command.kind_of?(Array) and valid_commands.include? command[0])
@@ -156,15 +153,6 @@ class StormyCloudTransport
 
       if command.length == 2
         return serialize(identifier)
-      else
-        return serialize("INVALID COMMAND")
-      end
-
-    elsif command[0] == "KILL"
-
-      if (command[2] == @secret) and (command.length == 3)
-        @mode = :client
-        return serialize("OKAY")
       else
         return serialize("INVALID COMMAND")
       end
