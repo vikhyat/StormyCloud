@@ -1,4 +1,3 @@
-require 'base64'
 require 'digest'
 require 'msgpack'
 require 'securerandom'
@@ -148,7 +147,7 @@ class StormyCloudTransport
   def handle(string)
     valid_commands = ["HELLO", "GET", "PUT"]
     command = unserialize(string)
-    
+
     if not (command.kind_of?(Array) and valid_commands.include? command[0])
       # The command is invalid.
       return serialize("INVALID COMMAND")
@@ -214,13 +213,13 @@ class StormyCloudTransport
   # This can be overridden by the specific transport if the protocol used is
   # such that this mode of serialization is disadvantageous.
   def serialize(object)
-    Base64::encode64(object.to_msgpack)
+    Marshal.dump(object)
   end
 
   # Unserialize an object which has been serialized using the `serialize`
   # method.
   def unserialize(string)
-    MessagePack.unpack(Base64::decode64(string))
+    Marshal.load(string)
   end
 
   # Return all variables relevant to the job status.
