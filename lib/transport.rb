@@ -222,10 +222,13 @@ class StormyCloudTransport
     MessagePack.unpack(Base64::decode64(string))
   end
 
+  # Return all variables relevant to the 
+  def status
+  end
+
   # Block until the job is complete -- meant for usage by the server.
   def block_until_complete
     while not complete?
-      puts "#{@completed.length}/#{@task_count} done."
       sleep 1
     end
   end
