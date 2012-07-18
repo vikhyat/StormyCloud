@@ -155,6 +155,9 @@ class StormyCloud
       if ['node', 'server'].include? ARGV[0]
         @transport = @transport_class.new(self)
         @transport.mode = ARGV[0].to_sym
+        puts "> My identifier is #{@transport.identifier}."
+        puts "> Running in #{@transport.mode} mode."
+        puts ">"
         if @transport.mode == :server
           Thread.new { @transport.run }
           $transport = @transport
