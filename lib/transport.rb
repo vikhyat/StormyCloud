@@ -219,7 +219,7 @@ class StormyCloudTransport
   # Unserialize an object which has been serialized using the `serialize`
   # method.
   def unserialize(string)
-    Marshal.load(string)
+    Marshal.load(string) 
   end
 
   # Return all variables relevant to the job status.

@@ -7,7 +7,12 @@ class StormyCloudTCPTransport < StormyCloudTransport
     @server_thread = Thread.new do
       loop do
         Thread.start(@server.accept) do |client|
-          client.puts handle(client.gets)
+          message = ''
+          while (t = client.gets).strip != "ENDOFTHEMESSAGE"
+            message += t
+          end
+          reply = handle(message)
+          client.puts reply
         end
       end
     end
@@ -21,6 +26,7 @@ class StormyCloudTCPTransport < StormyCloudTransport
     begin
       s = TCPSocket.new(@stormy_cloud.server, @stormy_cloud.config(:port))
       s.puts string
+      s.puts "ENDOFTHEMESSAGE"
       res = s.gets
       s.close
       res
