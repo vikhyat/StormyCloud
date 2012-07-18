@@ -12,7 +12,8 @@ Installation
 Usage
 -----
 
-Here's an example:
+Here's an example that will compute the sum of the squares of the first 1000
+numbers:
 
 ```ruby
 StormyCloud.new("square_summation", "10.6.2.213") do |c|
