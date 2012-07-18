@@ -1,5 +1,4 @@
 require 'digest'
-require 'msgpack'
 require 'securerandom'
 require 'set'
 require 'thread'
