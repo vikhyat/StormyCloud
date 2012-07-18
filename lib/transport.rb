@@ -229,7 +229,9 @@ class StormyCloudTransport
       clients: @clients,
       assigned: @assigned,
       task_count: @task_count,
-      completed_count: @completed_count
+      completed_count: @completed_count,
+      assigned_count: @assigned.length,
+      name: @stormy_cloud.name
     }
   end
 
@@ -252,7 +254,6 @@ class StormyCloudTransport
       split
       initialize_server
       block_until_complete
-      kill_server
     else
       @mode = :client
       # Do clienty things.

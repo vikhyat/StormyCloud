@@ -7,7 +7,7 @@ StormyCloud.new("square_summation", "localhost") do |c|
   # Set the time to wait for a node to return a result to 20 seconds.
   # If the node doesn't respond within this time, it is assumed to be dead.
   # The default value is 15 seconds.
-  c.config :wait, 20
+  c.config :wait, 35
 
   # Split the problem into a number of smaller tasks which will be solved by
   # the nodes in parallel.
@@ -17,7 +17,7 @@ StormyCloud.new("square_summation", "localhost") do |c|
 
   # Perform a single task.
   c.map do |t|
-    sleep 2 # "work"
+    sleep 10 # "work"
     t**2
   end
 
@@ -27,8 +27,9 @@ StormyCloud.new("square_summation", "localhost") do |c|
     @sum += r
   end
 
-  # Print the result when it is computed.
+  # Print the result when it is computed, and then return the result.
   c.finally do
     puts @sum
+    @sum
   end
 end
