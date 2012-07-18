@@ -157,7 +157,10 @@ class StormyCloud
         @transport.mode = ARGV[0].to_sym
         if @transport.mode == :server
           Thread.new { @transport.run }
+          $transport = @transport
           require_relative '../dashboard/dash.rb'
+        else
+          @transport.run
         end
       else
         puts "ARGV[0] should be the run mode (node or server)."

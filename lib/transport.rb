@@ -116,6 +116,7 @@ class StormyCloudTransport
       if not @completed.include? task
         @completed.add task
         @stormy_cloud.reduce(task, result)
+        @completed_count += 1
       end
     end
 
@@ -222,8 +223,14 @@ class StormyCloudTransport
     MessagePack.unpack(Base64::decode64(string))
   end
 
-  # Return all variables relevant to the 
+  # Return all variables relevant to the job status.
   def status
+    {
+      clients: @clients,
+      assigned: @assigned,
+      task_count: @task_count,
+      completed_count: @completed_count
+    }
   end
 
   # Block until the job is complete -- meant for usage by the server.
