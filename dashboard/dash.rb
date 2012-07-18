@@ -50,7 +50,7 @@ class Dashboard < Sinatra::Base
   set :logging, false
 
   get '/' do
-    File.read('dashboard/index.html')
+    File.read(File.join(settings.public_folder, 'index.html'))
   end
 
   get '/status' do
