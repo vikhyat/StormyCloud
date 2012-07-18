@@ -4,6 +4,8 @@ StormyCloud
 **Goal:** Make it _ridiculously_ easy to write simple distributed application
 in Ruby.
 
+[![Build Status](https://secure.travis-ci.org/vikhyat/StormyCloud.png?branch=master)](http://travis-ci.org/vikhyat/StormyCloud)
+
 Installation
 ------------
 
