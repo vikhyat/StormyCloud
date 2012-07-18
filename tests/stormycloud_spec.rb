@@ -112,7 +112,7 @@ describe StormyCloud do
   end
 
   describe "#run" do
-    it "should run on a single machine in debug mode, returning the finally value" do
+    it "should run on a single machine in debug mode and return the finally value" do
       @sc = StormyCloud.new("test", "127.0.0.1")
       @sc.config :debug, true
       @sc.split { (1..42).to_a }
