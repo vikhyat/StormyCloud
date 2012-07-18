@@ -17,7 +17,7 @@ StormyCloud.new("square_summation", "localhost") do |c|
 
   # Perform a single task.
   c.map do |t|
-    sleep 10 # "work"
+    sleep 30 # "work"
     t**2
   end
 

@@ -93,4 +93,6 @@ Then log in to each of the nodes and run the following commands:
 
     $ ruby job.rb node
 
-**TODO** Web-based progress tracking.
+When the server is run, a HTTP server will be spawned on that machine on port
+4567, which can be used to track the progress of the job. It will show the
+connected nodes, currently assigned tasks the estimated time to completion.
