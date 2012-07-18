@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'stormy-cloud'
-  s.version     = '0.1.2'
+  s.version     = '0.1.3'
   s.date        = '2012-06-18'
   s.summary     = "Ridiculously simple distributed applications."
   s.description = "StormyCloud makes writing distributed applications in Ruby a piece of cake."
