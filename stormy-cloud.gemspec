@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'stormy-cloud'
-  s.version     = '0.0.9'
+  s.version     = '0.1.0'
   s.date        = '2012-06-18'
   s.summary     = "Ridiculously simple distributed applications."
   s.description = "StormyCloud makes writing distributed applications in Ruby a piece of cake."
@@ -13,8 +13,4 @@ Gem::Specification.new do |s|
   end
 
   s.homepage    = "https://github.com/vikhyat/StormyCloud"
-
-  s.add_development_dependency "rspec"
-  s.add_runtime_dependency "msgpack"
-  s.add_runtime_dependency "sinatra"
 end
