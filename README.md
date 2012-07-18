@@ -7,7 +7,9 @@ in Ruby.
 Installation
 ------------
 
-**Todo** Package this as a gem.
+StormyCloud can be installed using RubyGems:
+
+    $ gem install stormy-cloud
 
 Usage
 -----
@@ -16,6 +18,8 @@ Here's an example that will compute the sum of the squares of the first 1000
 numbers:
 
 ```ruby
+require 'stormy-cloud'
+
 StormyCloud.new("square_summation", "10.6.2.213") do |c|
 
   c.split { (1..1000).to_a }
