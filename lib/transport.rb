@@ -2,6 +2,7 @@ require 'digest'
 require 'securerandom'
 require 'set'
 require 'thread'
+require 'json'
 
 # Define the basic outline of a transport, and provide serialization and stuff
 # so that code doesn't have to be duplicated in every transport definition.
@@ -178,7 +179,7 @@ class StormyCloudTransport
         put_task(task, result)
         return serialize("OKAY")
       end
-      
+
     end
   end
 
@@ -212,13 +213,13 @@ class StormyCloudTransport
   # This can be overridden by the specific transport if the protocol used is
   # such that this mode of serialization is disadvantageous.
   def serialize(object)
-    Marshal.dump(object)
+    object.to_json
   end
 
   # Unserialize an object which has been serialized using the `serialize`
   # method.
   def unserialize(string)
-    Marshal.load(string) 
+    JSON.load(string)
   end
 
   # Return all variables relevant to the job status.

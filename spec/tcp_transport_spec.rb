@@ -5,7 +5,7 @@ describe StormyCloudTCPTransport do
     it "should run a simple task with multiple nodes" do
       job = StormyCloud.new("test", "localhost")
       job.split   { [1, 2, 3, 4, 5] }
-      job.map     {|t| sleep 1; t**2 }
+      job.map     {|t| t**2 }
       job.reduce  {|t, r| @s ||= 0; @s += (r - t) }
       job.finally { @s }
 
@@ -19,7 +19,7 @@ describe StormyCloudTCPTransport do
       }
 
       server_thread.join
-      server_transport.result.should == 40     
+      server_transport.result.should == 40
     end
   end
 end

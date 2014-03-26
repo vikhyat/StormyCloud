@@ -57,6 +57,8 @@ The `reduce` block is called once for each task and its result.
 `split`, `reduce` and `finally` will be run on a central server, but `map` will
 be run on worker nodes.
 
+The values returned by `split`, `reduce` and `finally` should be serializable to JSON.
+
 Configuration
 -------------
 
