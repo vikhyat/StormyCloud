@@ -239,7 +239,7 @@ class StormyCloudTransport
   # Block until the job is complete -- meant for usage by the server.
   def block_until_complete
     while not complete?
-      sleep 1
+      sleep 0.2
     end
   end
 
