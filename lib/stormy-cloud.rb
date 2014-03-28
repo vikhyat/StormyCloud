@@ -27,6 +27,7 @@ class StormyCloud
     end
     @finally  = lambda { nil }
 
+    @map_mutex    = Mutex.new
     @reduce_mutex = Mutex.new
 
     @transport_class = transport
@@ -117,7 +118,11 @@ class StormyCloud
     if block
       @map = block
     else
-      [[task, @map.call(task)]]
+      retval = nil
+      @map_mutex.synchronize do
+        retval = [[task, @map.call(task)]]
+      end
+      retval
     end
   end
 
