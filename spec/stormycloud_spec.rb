@@ -71,7 +71,7 @@ describe StormyCloud do
 
     it "should accept a block and save it" do
       @sc.map { 42 }
-      @sc.map(23).should == 42
+      @sc.map(23).should == [[23, 42]]
     end
   end
 

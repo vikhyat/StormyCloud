@@ -50,7 +50,7 @@ class StormyCloud
     else
       @config[key] = value
     end
-    
+
   end
 
   # Validate the configuration keys and values.
@@ -107,6 +107,8 @@ class StormyCloud
   # When called with a block, save the block for later user. When called
   # with a single argument, call the block saved earlier. Raise an
   # ArgumentError if called without a block and task.
+  #
+  # Returns an array of key-value pairs.
   def map(task=nil, &block)
     if task.nil? and block.nil?
       raise ArgumentError, "map called without a task and block"
@@ -115,7 +117,7 @@ class StormyCloud
     if block
       @map = block
     else
-      @map.call(task)
+      [[task, @map.call(task)]]
     end
   end
 
@@ -149,7 +151,9 @@ class StormyCloud
   # Run the job!
   def run
     if config(:debug)
-      split.each {|t| reduce(t, map(t)) }
+      split.each do |task|
+        map(task).each {|k, v| reduce(k, v) }
+      end
       @result = finally
     else
       if ['node', 'server'].include? ARGV[0]

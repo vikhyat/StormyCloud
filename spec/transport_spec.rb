@@ -50,14 +50,14 @@ describe StormyCloudTransport do
 
     it "should call reduce on each completed task once" do
       @t.get_task
-      @t.put_task(1, 42)
-      @t.put_task(1, 42)
+      @t.put_task(1, [[1, 42]])
+      @t.put_task(1, [[1, 42]])
       @sc.finally.should == 42
     end
 
     it "should call finally when the job is complete" do
       @t.get_task
-      @t.put_task(1, 42)
+      @t.put_task(1, [[1, 42]])
       @sc.result.should == 42
     end
   end
@@ -80,7 +80,7 @@ describe StormyCloudTransport do
       t.complete?.should == false
       t.get_task
       t.complete?.should == false
-      t.put_task(1, 3)
+      t.put_task(1, [[1, 3]])
       t.complete?.should == true
     end
   end
@@ -95,7 +95,7 @@ describe StormyCloudTransport do
       {
         ["HELLO", t.identifier]               => t.identifier,
         ["GET", t.identifier]                 => 1,
-        ["PUT", t.identifier, 1, 42]          => "OKAY",
+        ["PUT", t.identifier, 1, [[1,42]]]    => "OKAY",
         ["PUT", "invalid format"]             => "INVALID COMMAND",
       }.each do |k, v|
         t.unserialize(t.handle(t.serialize(k))).should == v

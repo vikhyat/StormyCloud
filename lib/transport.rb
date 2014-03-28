@@ -104,7 +104,7 @@ class StormyCloudTransport
   # list, add it to the completed list and call the reduce method.
   # If the task is already in the completed set, do nothing.
   # If the job is complete, call finally.
-  def put_task(task, result)
+  def put_task(task, results)
     @queue_mutex.synchronize do
       return if @completed.include? task
 
@@ -114,7 +114,9 @@ class StormyCloudTransport
 
       if not @completed.include? task
         @completed.add task
-        @stormy_cloud.reduce(task, result)
+        results.each do |key, value|
+          @stormy_cloud.reduce(key, value)
+        end
         @completed_count += 1
       end
     end
@@ -171,12 +173,12 @@ class StormyCloudTransport
     elsif command[0] == "PUT"
 
       task = command[2]
-      result = command[3]
+      results = command[3]
 
       if command.length != 4
         return serialize("INVALID COMMAND")
       else
-        put_task(task, result)
+        put_task(task, results)
         return serialize("OKAY")
       end
 
@@ -259,8 +261,8 @@ class StormyCloudTransport
       loop do
         task = send_message(["GET", identifier])
         break if task == nil
-        result = @stormy_cloud.map(task)
-        send_message(["PUT", identifier, task, result])
+        results = @stormy_cloud.map(task)
+        send_message(["PUT", identifier, task, results])
       end
     end
   end
