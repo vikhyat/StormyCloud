@@ -59,6 +59,26 @@ be run on worker nodes.
 
 The values returned by `split`, `reduce` and `finally` should be serializable to JSON.
 
+Emit API
+--------
+
+By default the reduce function is passed a key-value pair (t, r) where `t` is the
+original task and `r` is the value returned the the `map` function when it is
+called with the task `t`. In some cases, we require that the `map` function emit
+an arbitrary number of key-value pairs to be reduced. For that purpose it is
+possible to call `emit` inside the map function any number of times to emit
+arbitrary key-value pairs to be reduced.
+
+For example:
+
+    c.map do |task|
+      emit "key1", "value1"
+      emit "key2", "value2"
+    end
+
+If your `map` function calls the `emit` function then the default key-value pair of
+(task, return_value) will not be emitted.
+
 Configuration
 -------------
 

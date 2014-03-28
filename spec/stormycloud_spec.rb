@@ -38,7 +38,7 @@ describe StormyCloud do
     before(:each) do
       @sc = StormyCloud.new("test", "127.0.0.1")
     end
-    
+
     it "should raise NotImplementedError if no split function is given" do
       expect { @sc.split }.to raise_error(NotImplementedError)
     end
@@ -73,6 +73,17 @@ describe StormyCloud do
       @sc.map { 42 }
       @sc.map(23).should == [[23, 42]]
     end
+
+    it "should allow emitting arbitrary key value pairs" do
+      @sc.map do |t|
+        emit "key", "value1"
+        emit "key", "value2"
+        emit 1, t
+        20 # Returned value should be ignored.
+      end
+      @sc.map(5).should == [["key", "value1"], ["key", "value2"], [1, 5]]
+      @sc.map(6).should == [["key", "value1"], ["key", "value2"], [1, 6]]
+    end
   end
 
   describe "#reduce" do
@@ -89,7 +100,7 @@ describe StormyCloud do
       @sc.reduce {|t, r| r + 50 }
       expect { @sc.reduce }.to raise_error(ArgumentError)
     end
-    
+
     it "should accept a block and save it" do
       @sc.reduce {|t, r| r + 50 }
       @sc.reduce(42, 23).should == 73

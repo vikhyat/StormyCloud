@@ -30,6 +30,9 @@ class StormyCloud
     @map_mutex    = Mutex.new
     @reduce_mutex = Mutex.new
 
+    # Used in the map function to support the emit API.
+    @emitted_values = []
+
     @transport_class = transport
 
     if block_given?
@@ -118,12 +121,22 @@ class StormyCloud
     if block
       @map = block
     else
-      retval = nil
       @map_mutex.synchronize do
-        retval = [[task, @map.call(task)]]
+        @emitted_values = []
+        results = instance_exec task, &@map
+        if @emitted_values.length > 0
+          return @emitted_values
+        else
+          return [[task, results]]
+        end
       end
-      retval
     end
+  end
+
+  # Provide an emit function for use in the map function to allow returning
+  # arbitrary key-value pairs.
+  def emit(key, value)
+    @emitted_values.push [key, value]
   end
 
   # When called with a block, save the block for later user. When called
